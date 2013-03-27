@@ -30,6 +30,14 @@ module Sendgrid
           sg_opts[:category] = category
         end
 
+        if filters_options = headers.delete(:sg_filters)
+          filters_options = [filters_options] unless filters_options.is_a? Array
+          sg_opts[:filters] = {}
+          filters_options.each do |filter|
+            sg_opts[:filters][filter] = { :settings => { :enable => 1 } }
+          end
+        end
+
         sg_opts.to_json.gsub(/(["\]}])([,:])(["\[{])/, '\\1\\2 \\3')
       end
     end
