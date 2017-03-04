@@ -9,16 +9,15 @@ module Sendgrid
     module ClassMethods
       def sendgrid
         include InstanceMethods
-
-        alias_method_chain :mail, :sendgrid
       end
     end
 
     module InstanceMethods
-      def mail_with_sendgrid(headers = {}, &block)
+      def mail(headers = {}, &block)
+        headers = headers.dup # duplicate to avoid side effect
         headers['X-SMTPAPI'] = sendgrid_json_headers(headers)
 
-        mail_without_sendgrid(headers, &block)
+        super(headers, &block)
       end
 
       private
